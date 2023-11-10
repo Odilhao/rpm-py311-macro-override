@@ -9,7 +9,7 @@ Version:        1.0.0
 Release:        1%{?dist}
 
 # Macro files
-Source001:      macros.aaa-python311-override
+Source001:      macros.aaa-python-override
 
 Source100:      LICENSE
 
@@ -40,15 +40,15 @@ cp -p %{sources} .
 
 %install
 mkdir -p %{buildroot}%{_rpmmacrodir}
-install -pm 644 macros.aaa-python311-override %{buildroot}%{_rpmmacrodir}/
+install -pm 644 macros.aaa-python-override %{buildroot}%{_rpmmacrodir}/
 
 %files
-%{_rpmmacrodir}/macros.aaa-python311-override
+%{_rpmmacrodir}/macros.aaa-python-override
 
 %license LICENSE
 
 %files -n python%{python3_pkgversion}-rpm-py311-macro-override
-%{_rpmmacrodir}/macros.aaa-python311-override
+%{_rpmmacrodir}/macros.aaa-python-override
 %license LICENSE
 
 
