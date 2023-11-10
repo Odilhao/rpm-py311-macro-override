@@ -1,0 +1,100 @@
+---
+all:
+  vars:
+    pulpcore_version: "nightly"
+    copr_project_user: "@theforeman"
+  children:
+    packages: {}
+    repoclosures: {}
+    copr_projects: {}
+
+packages:
+  vars:
+    rpmlint_rc_file: "{{ inventory_dir }}/.rpmlintrc"
+    build_package_build_system: copr
+    copr_projects:
+      - "{{ hostvars['pulpcore-copr'] }}"
+    koji_tags:
+      - name: pulpcore-{{ pulpcore_version }}-el9
+        dist: '.el9'
+    repoclosure_target_repos:
+      el9:
+        - "el9-pulpcore-{{ pulpcore_version }}"
+    repoclosure_lookaside_repos:
+      el8:
+        - el8-baseos
+        - el8-appstream
+        - el8-powertools
+      el9:
+        - el9-baseos
+        - el9-appstream
+        - el9-crb
+  children:
+    buildroot_packages: {}
+
+copr_projects:
+  vars:
+    core_modules:
+      - 'ruby:2.7'
+    rhel_9: '9'
+    rhel_8: '8'
+    root_repo_url: https://download.copr.fedorainfracloud.org/results/@theforeman
+    pulpcore_staging: "{{ root_repo_url }}/pulpcore-{{ pulpcore_version }}-staging"
+  hosts:
+    pulpcore-copr:
+      copr_project_name: "pulpcore-{{ pulpcore_version }}-staging"
+      copr_project_chroots:
+        - name: "rhel-{{ rhel_9 }}-x86_64"
+          comps_file: "{{ inventory_dir }}/comps/comps-pulpcore-el{{ rhel_9 }}.xml"
+          buildroot_packages:
+            - gcc-c++
+            - python3.11-rpm-macros
+            - python3.11
+            - python3.11-devel
+
+repoclosures:
+  hosts:
+    pulpcore-repoclosure-el8:
+      repoclosure_target_repos:
+        el8:
+          - "el8-pulpcore-{{ pulpcore_version }}"
+      repoclosure_target_dist: el8
+      repoclosure_lookaside_repos:
+        el8:
+          - el8-baseos
+          - el8-appstream
+          - el8-powertools
+    pulpcore-repoclosure-el9:
+      repoclosure_target_repos:
+        el9:
+          - "el9-pulpcore-{{ pulpcore_version }}"
+      repoclosure_target_dist: el9
+      repoclosure_lookaside_repos:
+        el9:
+          - el9-baseos
+          - el9-appstream
+          - el9-crb
+    pulpcore-staging-repoclosure-el8:
+      repoclosure_target_repos:
+        el8:
+          - "el8-pulpcore-{{ pulpcore_version }}-staging"
+      repoclosure_target_dist: el8
+      repoclosure_lookaside_repos:
+        el8:
+          - el8-baseos
+          - el8-appstream
+          - el8-powertools
+    pulpcore-staging-repoclosure-el9:
+      repoclosure_target_repos:
+        el9:
+          - "el9-pulpcore-{{ pulpcore_version }}-staging"
+      repoclosure_target_dist: el9
+      repoclosure_lookaside_repos:
+        el9:
+          - el9-baseos
+          - el9-appstream
+          - el9-crb
+
+buildroot_packages:
+  hosts:
+    rpm-py311-macro-override: {}
