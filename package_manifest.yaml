@@ -11,7 +11,7 @@ all:
 packages:
   vars:
     rpmlint_rc_file: "{{ inventory_dir }}/.rpmlintrc"
-    build_package_build_system: copr
+    build_package_use_koji_build: true
     copr_projects:
       - "{{ hostvars['pulpcore-copr'] }}"
     koji_tags:
@@ -42,7 +42,7 @@ copr_projects:
     pulpcore_staging: "{{ root_repo_url }}/pulpcore-{{ pulpcore_version }}-staging"
   hosts:
     pulpcore-copr:
-      copr_project_name: "pulpcore-{{ pulpcore_version }}-staging"
+      copr_project_name: "rpm-py311-macro-override-staging"
       copr_project_chroots:
         - name: "rhel-{{ rhel_9 }}-x86_64"
           comps_file: "{{ inventory_dir }}/comps/comps-pulpcore-el{{ rhel_9 }}.xml"
